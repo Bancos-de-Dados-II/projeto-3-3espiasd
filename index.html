@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapa de Eventos</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h1>📍 Mapa de Eventos</h1>
+
+    <div id="map"></div>
+
+    <div class="input-div">
+      <input type="text" id="nome" placeholder="🎉 Nome do evento" />
+      <input type="text" id="descricao" placeholder="📝 Descrição do evento" />
+      <input type="date" id="data" />
+      <input type="text" id="local" placeholder="📍 Digite o local" />
+    </div>
+
+    <div class="button-div">
+      <button id="botaoBuscar">🔍 Buscar</button>
+      <button id="botaoSalvar">💾 Salvar Evento</button>
+      <button id="botaoVerEventos">📋 Ver eventos</button>
+      <a href="graficos.html" class="btn-link" target="_blank">📊 Ver Gráfico</a>
+      <a href="search/search.html" class="btn-link">🔍 Pesquisa por índice</a>
+    </div>
+
+    <div id="mostrarEventos"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
