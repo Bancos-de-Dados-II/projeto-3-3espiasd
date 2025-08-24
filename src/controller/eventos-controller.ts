@@ -62,22 +62,22 @@ export async function postEvento(req: Request, res: Response) {
     const { nome, descricao, dataHora, local } = req.body as Paramentro;
 
     // 1. Cria no MongoDB
-    const newEvent = await Evento.create({
+    const newEvent = (await Evento.create({
       nome,
       descricao,
       dataHora,
       local,
-    });
+    })) as any; 
+    
 
     // 2. Cria também no Neo4j
     await session.run(
-      `CREATE (e:Evento {id: $id, nome: $nome, descricao: $descricao, dataHora: $dataHora, local: $local})`,
+      `CREATE (e:Evento {id: $id, nome: $nome, descricao: $descricao, dataHora: $dataHora})`,
       {
         id: newEvent._id.toString(),
         nome: newEvent.nome,
         descricao: newEvent.descricao || "",
-        dataHora: dataHora,
-        local: JSON.stringify(newEvent.local),
+        dataHora: newEvent.dataHora ? newEvent.dataHora.toISOString() : null
       }
     );
 
