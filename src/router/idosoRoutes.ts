@@ -5,9 +5,9 @@ import { createIdoso, getIdosos, getIdosoById, putIdoso, delIdoso } from "../con
 const routerIdoso = Router();
 
 routerIdoso.post('/cadastrarIdoso', createIdoso);
-routerIdoso.get('/idosos', getIdosos);
-routerIdoso.get('/idoso/:id', getIdosoById);
-routerIdoso.put('/idoso/:id', putIdoso);
-routerIdoso.delete('/idoso/:id', delIdoso);
+routerIdoso.get('/', getIdosos);
+routerIdoso.get('/:id', getIdosoById);
+routerIdoso.put('/:id', putIdoso);
+routerIdoso.delete('/:id', delIdoso);
 
 export default routerIdoso;
