@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const conectar = async () => {
+export const conectarMongo = async () => {
   if (!process.env.MONGO_URL) {
     throw new Error('MONGO_URL is not defined in the environment variables');
   }
