@@ -1,27 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de idosos</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Idosos</title>
+  <link rel="stylesheet" href="cadastrarIdosos.css">
 </head>
 <body>
-    <div class="input-div">
-      <input type="text" id="nome" placeholder="Nome do idoso:" />
-      <input type="text" id="descricao" placeholder="cpf do idoso: " />
-      <input type="text" id="descricao" placeholder="Cartão de identidade do idoso do idoso: " />
-      <input type="text" id="descricao" placeholder="Cartão do SUS do idoso: " />
-      <input type="date" id="data" placeholder="Data de nascimento do idoso:"/>
-      <input type="text" id="descricao" placeholder="Sexo do idoso: " />
-      <input type="text" id="descricao" placeholder="Nacionalidade do idoso: " />
-      <input type="text" id="descricao" placeholder="naturalidade do idoso: " />
-      
-    </div>
+  <div class="container">
+    <h1>Cadastro de Idosos</h1>
 
-    <div class="button-div">
-      <button id="botaoSalvar">💾 Salvar Idoso</button>
+    <form id="form-idoso">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" required>
 
-      <a href="Voltar para a tela principal" class="btn-link">Voltar para a tela principal</a>
-    </div>
+      <label for="cpf">CPF:</label>
+      <input type="text" id="cpf" required>
+
+      <label for="rg">RG:</label>
+      <input type="text" id="rg">
+
+      <label for="sus">Cartão SUS:</label>
+      <input type="text" id="sus">
+
+      <label for="data_nascimento">Data de Nascimento:</label>
+      <input type="date" id="data_nascimento" required>
+
+      <label for="sexo">Sexo:</label>
+      <select id="sexo" required>
+        <option value="">Selecione</option>
+        <option value="Masculino">Masculino</option>
+        <option value="Feminino">Feminino</option>
+        <option value="Outro">Outro</option>
+      </select>
+
+      <label for="nacionalidade">Nacionalidade:</label>
+      <input type="text" id="nacionalidade">
+
+      <label for="naturalidade">Naturalidade:</label>
+      <input type="text" id="naturalidade">
+
+  <div class="botoes">
+    <button type="submit">Salvar Cadastro</button>
+    <a href="../index.html" class="btn-link">Voltar para a tela principal</a>
+  </div>
+    </form>
+
+    <h2>Idosos cadastrados</h2>
+    <ul id="lista-idosos"></ul>
+  </div>
+
+  <script src="cadastrarIdosos.js"></script>
 </body>
 </html>

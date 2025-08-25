@@ -1,0 +1,92 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.container {
+  width: 500px;
+  margin: 40px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+form label {
+  display: block;
+  margin-top: 10px;
+  color: #555;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#lista-idosos {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+#lista-idosos li {
+  background-color: #f0f4f8;
+  padding: 12px 15px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+#lista-idosos li strong {
+  color: #333;
+}
+
+.botoes {
+  display: flex;
+  gap: 10px; /* espaço entre os botões */
+  margin-top: 20px;
+}
+
+.botoes button,
+.botoes .btn-link {
+  flex: 1; /* mesmos tamanhos */
+  padding: 12px;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Botão verde de salvar */
+.botoes button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.botoes button:hover {
+  background-color: #45a049;
+}
+
+/* Link cinza de voltar */
+.botoes .btn-link {
+  background-color: #ccc;
+  color: #333;
+  display: inline-block; /* necessário para padding */
+}
+
+.botoes .btn-link:hover {
+  background-color: #bbb;
+}
