@@ -1,71 +1,94 @@
 const form = document.getElementById("form-idoso");
 const lista = document.getElementById("lista-idosos");
 
-// Função para criar um item da lista mostrando todos os campos
+// Campos do formulário
+const campos = ["nome","cpf","rg","sus","data_nascimento","sexo","nacionalidade","naturalidade"];
+
+// Função para criar item da lista
 function criarItemIdoso(idoso) {
-  const item = document.createElement("li");
-  item.innerHTML = `
-    <strong>Nome:</strong> ${idoso.nome} <br>
-    <strong>CPF:</strong> ${idoso.cpf} <br>
-    <strong>RG:</strong> ${idoso.rg || "-"} <br>
-    <strong>SUS:</strong> ${idoso.sus || "-"} <br>
-    <strong>Data de Nascimento:</strong> ${idoso.data_nascimento ? new Date(idoso.data_nascimento).toLocaleDateString() : "-"} <br>
-    <strong>Sexo:</strong> ${idoso.sexo} <br>
-    <strong>Nacionalidade:</strong> ${idoso.nacionalidade || "-"} <br>
-    <strong>Naturalidade:</strong> ${idoso.naturalidade || "-"}
+  const li = document.createElement("li");
+  li.dataset.id = idoso._id;
+  li.innerHTML = `
+    ${campos.map(c => `<strong>${c}:</strong> ${idoso[c] || "-"}<br>`).join("")}
+    <div class="acoes">
+      <button class="btn-atualizar">Atualizar</button>
+      <button class="btn-deletar">Deletar</button>
+    </div>
   `;
-  return item;
+  return li;
 }
 
-// Adiciona novo idoso
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const formData = {
-    nome: document.getElementById("nome").value,
-    cpf: document.getElementById("cpf").value,
-    rg: document.getElementById("rg").value,
-    sus: document.getElementById("sus").value,
-    data_nascimento: document.getElementById("data_nascimento").value,
-    sexo: document.getElementById("sexo").value,
-    nacionalidade: document.getElementById("nacionalidade").value,
-    naturalidade: document.getElementById("naturalidade").value
-  };
-
-  try {
-    const response = await fetch("http://localhost:3000/idosos/cadastrarIdoso", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
-    });
-
-    if (!response.ok) throw new Error("Erro ao salvar idoso");
-
-    const novoIdoso = await response.json();
-    alert("Idoso salvo com sucesso!");
-
-    // Adiciona na lista mostrando todos os campos
-    lista.appendChild(criarItemIdoso(novoIdoso));
-    form.reset();
-  } catch (error) {
-    alert("Erro: " + error.message);
-  }
-});
-
-// Carrega todos os idosos já cadastrados ao abrir a página
+// Carregar todos os idosos
 async function carregarIdosos() {
   try {
     const res = await fetch("http://localhost:3000/idosos");
-    if (!res.ok) throw new Error("Erro ao carregar idosos");
-
     const idosos = await res.json();
     lista.innerHTML = "";
     idosos.forEach(idoso => lista.appendChild(criarItemIdoso(idoso)));
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     lista.innerHTML = "<li>Erro ao carregar idosos.</li>";
   }
 }
 
-// Executa ao carregar a página
+// Delegação de eventos para atualizar/deletar
+lista.addEventListener("click", async (e) => {
+  const li = e.target.closest("li");
+  if (!li) return;
+  const id = li.dataset.id;
+
+  // Deletar
+  if (e.target.classList.contains("btn-deletar")) {
+    if (!confirm("Deseja realmente deletar este idoso?")) return;
+    try {
+      await fetch(`http://localhost:3000/idosos/${id}`, { method: "DELETE" });
+      li.remove();
+      alert("Idoso deletado com sucesso!");
+    } catch (err) {
+      alert("Erro ao deletar idoso");
+    }
+  }
+
+  // Atualizar
+  if (e.target.classList.contains("btn-atualizar")) {
+    const res = await fetch(`http://localhost:3000/idosos/${id}`);
+    const idoso = await res.json();
+    campos.forEach(c => form[c].value = idoso[c] || "");
+    form.dataset.atualizando = id; // indica que estamos editando
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // rolar para o formulário
+  }
+});
+
+// Enviar formulário
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = Object.fromEntries(campos.map(c => [c, form[c].value]));
+
+  try {
+    if (form.dataset.atualizando) {
+      await fetch(`http://localhost:3000/idosos/${form.dataset.atualizando}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      delete form.dataset.atualizando;
+      alert("Idoso atualizado com sucesso!");
+    } else {
+      const res = await fetch("http://localhost:3000/idosos/cadastrarIdoso", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      const novoIdoso = await res.json();
+      lista.appendChild(criarItemIdoso(novoIdoso));
+      alert("Idoso cadastrado com sucesso!");
+    }
+    form.reset();
+    carregarIdosos();
+  } catch (err) {
+    alert("Erro ao salvar idoso");
+  }
+});
+
+// Inicializa
 window.addEventListener("DOMContentLoaded", carregarIdosos);
