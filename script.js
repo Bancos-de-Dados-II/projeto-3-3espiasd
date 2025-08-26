@@ -248,7 +248,7 @@ function criarBotaoAdicionarIdoso(evento, select, participantesSpan) {
             if (participantesSpan.textContent === "Nenhum participante ainda") {
                 participantesSpan.textContent = idosoNome;
             } else {
-                participantesSpan.textContent += ", " + idosoNome;
+                participantesSpan.innerHTML += "<br> " + idosoNome;
             }
 
             alert(`Idoso adicionado ao evento "${evento.nome}" com sucesso!`);
