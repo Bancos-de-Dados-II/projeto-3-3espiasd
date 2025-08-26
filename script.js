@@ -300,8 +300,8 @@ botaoVerEventos.addEventListener('click', async () => {
         // Lista de participantes
         const participantesSpan = document.createElement('span');
         participantesSpan.className = 'participantes';
-        participantesSpan.textContent = evento.participantes
-            ? evento.participantes.map(p => p.nome).join(', ')
+        participantesSpan.innerHTML = evento.participantes
+            ? evento.participantes.map(p => p.nome).join('<br> ')
             : "Nenhum participante ainda";
         li.appendChild(participantesSpan);
         li.appendChild(document.createElement('br'));
