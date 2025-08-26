@@ -74,10 +74,31 @@ button:hover,
   background-color: #18aa1d;
 }
 
-#mostrarEventos {
-  margin-top: 1.5rem;
-  background: white;
+#mostrarEventos li {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  list-style: none;
+}
+
+#mostrarEventos li strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #2c3e50;
+}
+
+#mostrarEventos li button {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  margin-right: 5px;
+}
+
+#mostrarEventos li select {
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  margin-right: 5px;
 }

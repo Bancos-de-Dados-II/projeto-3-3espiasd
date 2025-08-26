@@ -22,7 +22,12 @@ const eventoSchema = new mongoose.Schema({
             type: [Number], 
             required: true
         }
-    }
+    },
+    participantes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Idoso", // referencia o model Idoso
+    }]
+    
 });
 
 // Indices de busca de texto

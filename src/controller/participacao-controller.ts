@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import driver from "../database/neo4j";
+import Evento from "../models/Evento";
 
 // Participar de evento
 export const participarEvento = async (req: Request, res: Response) => {
@@ -14,6 +15,10 @@ export const participarEvento = async (req: Request, res: Response) => {
       `,
       { idosoId, eventoId }
     );
+    // Salva no MongoDB
+    await Evento.findByIdAndUpdate(eventoId, {
+      $addToSet: { participantes: idosoId }
+    });
 
     res.json({ message: "Participação registrada com sucesso!" });
   } catch (error) {

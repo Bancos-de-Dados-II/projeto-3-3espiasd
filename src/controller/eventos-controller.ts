@@ -30,7 +30,7 @@ type Paramentro = {
 // ---------------- GET todos os eventos ----------------
 export async function getEventos(req: Request, res: Response) {
   try {
-    const events = await Evento.find();
+    const events = await Evento.find().populate("participantes", "nome");
     res.status(200).json(events);
   } catch (error) {
     res.status(500).json({ message: "Erro ao buscar eventos", error });

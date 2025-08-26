@@ -147,37 +147,6 @@ async function apagarEvento(id) {
     }
 }
 
-
-async function carregarEventosNoMapa() {
-    try {
-        const response = await fetch('http://localhost:3000/Eventos');
-        const eventos = await response.json();
-        marcadoresEventos.forEach(m => map.removeLayer(m));
-        marcadoresEventos.length = 0;
-
-        const bounds = [];
-
-        eventos.forEach(evento => {
-            const [lng, lat] = evento.local.coordinates;
-            const latlng = [lat, lng];
-            bounds.push(latlng);
-
-            const marcador = L.marker(latlng, { icon: icone })
-                .addTo(map)
-                .bindPopup(`<strong>${evento.nome}</strong><br>${evento.descricao}`);
-            marcadoresEventos.push(marcador);
-        });
-
-        if (bounds.length > 0) {
-            map.fitBounds(bounds);
-        }
-    } catch (error) {
-        console.error("Erro ao carregar eventos no mapa:", error);
-    }
-}
-carregarEventosNoMapa();
-
-
 async function reverseGeoCode(lat, lng) {
     try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
@@ -227,9 +196,76 @@ botaoSalvar.addEventListener('click', () => {
     }
 });
 
+// Buscar idosos
+async function verIdosos() {
+    try {
+        const res = await fetch("http://localhost:3000/idosos");
+        if (!res.ok) throw new Error("Erro ao buscar idosos");
+        return await res.json();
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+// Criar select de idosos
+function criarSelectIdosos(eventoId, idosos) {
+    const select = document.createElement('select');
+    select.id = `select-${eventoId}`;
+
+    const optionInicial = document.createElement('option');
+    optionInicial.value = "";
+    optionInicial.textContent = "Selecione um idoso";
+    select.appendChild(optionInicial);
+
+    idosos.forEach(i => {
+        const opt = document.createElement('option');
+        opt.value = i._id;
+        opt.textContent = i.nome;
+        select.appendChild(opt);
+    });
+
+    return select;
+}
+
+// Criar botão de adicionar idoso
+function criarBotaoAdicionarIdoso(evento, select, participantesSpan) {
+    const btn = document.createElement('button');
+    btn.textContent = "Adicionar idoso";
+
+    btn.onclick = async () => {
+        const idosoId = select.value;
+        if (!idosoId) return alert("Selecione um idoso!");
+
+        try {
+            const res = await fetch(`http://localhost:3000/participacao/${idosoId}/participa/${evento._id}`, {
+                method: "POST"
+            });
+            if (!res.ok) throw new Error("Erro ao adicionar idoso");
+
+            // Atualiza o frontend com o nome do idoso
+            const idosoNome = select.options[select.selectedIndex].text;
+            if (participantesSpan.textContent === "Nenhum participante ainda") {
+                participantesSpan.textContent = idosoNome;
+            } else {
+                participantesSpan.textContent += ", " + idosoNome;
+            }
+
+            alert(`Idoso adicionado ao evento "${evento.nome}" com sucesso!`);
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
+    return btn;
+}
+
+// Mostrar eventos com botão de adicionar idoso
 botaoVerEventos.addEventListener('click', async () => {
     const eventos = await verEventos();
+    const idosos = await verIdosos();
     mostrarEventos.innerHTML = '';
+
     if (!eventos || eventos.length === 0) {
         mostrarEventos.textContent = 'Nenhum evento cadastrado ainda.';
         return;
@@ -237,14 +273,18 @@ botaoVerEventos.addEventListener('click', async () => {
 
     for (const evento of eventos) {
         const li = document.createElement('li');
+
+        // Informações do evento
         const [lng, lat] = evento.local.coordinates;
         const local = await reverseGeoCode(lat, lng);
-
-        li.innerHTML = `<strong>Nome:</strong> ${evento.nome}<br>
+        li.innerHTML = `
+            <strong>Nome:</strong> ${evento.nome}<br>
             <strong>Descrição:</strong> ${evento.descricao}<br>
             <strong>Data:</strong> ${new Date(evento.data).toLocaleDateString('pt-BR')}<br>
-            <strong>Local:</strong> ${local}<br><br>`;
+            <strong>Local:</strong> ${local}<br><br>
+        `;
 
+        // Botões atualizar e apagar
         const botaoAtualizar = document.createElement('button');
         botaoAtualizar.textContent = 'Atualizar evento';
         botaoAtualizar.onclick = () => preencherFormulario(evento);
@@ -255,7 +295,25 @@ botaoVerEventos.addEventListener('click', async () => {
 
         li.appendChild(botaoAtualizar);
         li.appendChild(botaoApagar);
+        li.appendChild(document.createElement('br'));
+
+        // Lista de participantes
+        const participantesSpan = document.createElement('span');
+        participantesSpan.className = 'participantes';
+        participantesSpan.textContent = evento.participantes
+            ? evento.participantes.map(p => p.nome).join(', ')
+            : "Nenhum participante ainda";
+        li.appendChild(participantesSpan);
+        li.appendChild(document.createElement('br'));
+
+        // Select de idosos
+        const selectIdosos = criarSelectIdosos(evento._id, idosos);
+        li.appendChild(selectIdosos);
+
+        // Botão adicionar idoso
+        const botaoAddIdoso = criarBotaoAdicionarIdoso(evento, selectIdosos, participantesSpan);
+        li.appendChild(botaoAddIdoso);
+
         mostrarEventos.appendChild(li);
     }
 });
-
